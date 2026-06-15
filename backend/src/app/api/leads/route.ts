@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { leadSchema } from "@/lib/leadSchema";
-import { insertLead } from "@/lib/leads";
+import { insertLead, markEmailSent } from "@/lib/leads";
+import { getSettings } from "@/lib/settings";
+import { sendLeadEmails } from "@/lib/email";
 
 function allowedOrigins(): string[] {
   return (process.env.ALLOWED_ORIGINS ?? "")
@@ -47,10 +49,21 @@ export async function POST(req: Request) {
     );
   }
 
+  let leadId: string;
   try {
-    await insertLead(parsed.data);
+    leadId = await insertLead(parsed.data);
   } catch {
     return NextResponse.json({ error: "server_error" }, { status: 500, headers });
+  }
+
+  // Best-effort: send the thank-you + admin notification. A failure here must NOT
+  // fail the request — the lead is already saved. email_sent stays false on failure.
+  try {
+    const settings = await getSettings();
+    await sendLeadEmails(parsed.data, settings);
+    await markEmailSent(leadId);
+  } catch (err) {
+    console.error("lead email failed", err);
   }
 
   return NextResponse.json({ ok: true }, { status: 200, headers });

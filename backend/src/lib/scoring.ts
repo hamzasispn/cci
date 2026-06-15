@@ -10,3 +10,15 @@ export function tierForScore(score: number): Tier {
   if (score <= 25) return "C";
   return "D";
 }
+
+// Human-readable tier names, mirroring form.js CONFIG.tiers labels.
+const TIER_LABELS: Record<Tier, string> = {
+  A: "Foundational",
+  B: "Emerging",
+  C: "Strategic",
+  D: "Multiplier-Ready",
+};
+
+export function tierLabel(tier: Tier): string {
+  return TIER_LABELS[tier];
+}
