@@ -89,3 +89,25 @@ export async function sendLeadEmails(lead: LeadEmailData, settings: Settings): P
     html: adminHtml(lead, vars),
   });
 }
+
+/** Send a single sample thank-you email to `to`, used by the dashboard test button. */
+export async function sendTestEmail(to: string, settings: Settings): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY is not set");
+  const resend = new Resend(apiKey);
+  const sample: LeadEmailData = {
+    firstName: "Jane",
+    lastName: "Smith",
+    company: "Acme Inc.",
+    email: to,
+    phone: "+1 555 123 4567",
+    score: 18,
+  };
+  const vars = buildVars(sample);
+  await resend.emails.send({
+    from: settings.from_email,
+    to,
+    subject: "[TEST] " + renderTemplate(settings.thankyou_subject, vars, { escape: false }),
+    html: renderTemplate(settings.thankyou_html, vars),
+  });
+}
