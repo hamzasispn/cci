@@ -23,7 +23,7 @@ export default function LoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      setError("Incorrect password.");
+      setError("Incorrect password. Try again.");
     }
   }
 
@@ -34,50 +34,53 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "system-ui, sans-serif",
-        background: "#f6f6f6",
+        padding: 24,
       }}
     >
-      <form
-        onSubmit={onSubmit}
+      <div
+        className="card rise"
         style={{
-          background: "#fff",
-          padding: 32,
-          borderRadius: 12,
-          boxShadow: "0 2px 16px rgba(0,0,0,.08)",
-          width: 340,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
+          width: 400,
+          maxWidth: "100%",
+          padding: 40,
+          boxShadow: "var(--shadow-lg)",
         }}
       >
-        <h1 style={{ fontSize: 20, margin: 0 }}>CCI Leads — Admin</h1>
-        <p style={{ fontSize: 13, color: "#666", margin: 0 }}>Enter the admin password.</p>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          autoFocus
-          style={{ padding: "10px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 14 }}
-        />
-        {error && <span style={{ color: "#c94f4f", fontSize: 13 }}>{error}</span>}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 12px",
-            background: "#1E1E1E",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
+        <div className="eyebrow" style={{ marginBottom: 10 }}>
+          Coachability Consultants
+        </div>
+        <h1 className="display" style={{ fontSize: 32, marginBottom: 6 }}>
+          Leads admin
+        </h1>
+        <p className="hint" style={{ marginBottom: 28 }}>
+          Sign in to manage submissions and email settings.
+        </p>
+
+        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div className="field">
+            <label className="label">Password</label>
+            <input
+              className="input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              autoFocus
+            />
+          </div>
+          {error && (
+            <span style={{ color: "var(--danger)", fontSize: 13, fontWeight: 500 }}>{error}</span>
+          )}
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className="btn btn-primary"
+            style={{ width: "100%", padding: "12px 18px", marginTop: 4 }}
+          >
+            {loading ? "Signing in…" : "Sign in →"}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

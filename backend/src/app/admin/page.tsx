@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { requireAdmin } from "@/lib/auth";
 import { getServiceClient } from "@/lib/supabase";
-import AdminNav from "./AdminNav";
+import AdminShell from "./AdminShell";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,6 @@ interface LeadRow {
   score: number;
   tier: string;
   email_sent: boolean;
-  synced_to_sheet: boolean;
 }
 
 export default async function AdminLeadsPage() {
@@ -31,41 +30,75 @@ export default async function AdminLeadsPage() {
 
   const th: CSSProperties = {
     textAlign: "left",
-    padding: "8px 10px",
-    fontSize: 12,
-    color: "#888",
-    borderBottom: "1px solid #eee",
+    padding: "14px 18px",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: "var(--muted)",
+    borderBottom: "1px solid var(--line)",
     whiteSpace: "nowrap",
   };
   const td: CSSProperties = {
-    padding: "8px 10px",
-    fontSize: 13,
-    borderBottom: "1px solid #f3f3f3",
+    padding: "15px 18px",
+    fontSize: 14,
+    color: "var(--ink)",
+    borderBottom: "1px solid var(--line-soft)",
     whiteSpace: "nowrap",
   };
 
+  const downloadBtn = (
+    <a href="/api/admin/leads/export" className="btn btn-primary">
+      ↓ Download CSV
+    </a>
+  );
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", background: "#f6f6f6", minHeight: "100vh" }}>
-      <AdminNav active="leads" />
-      <main style={{ padding: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-          <h1 style={{ fontSize: 18, margin: 0 }}>Leads ({leads.length})</h1>
-          <a
-            href="/api/admin/leads/export"
-            style={{
-              marginLeft: "auto",
-              fontSize: 13,
-              padding: "8px 14px",
-              background: "#1E1E1E",
-              color: "#fff",
-              borderRadius: 999,
-              textDecoration: "none",
-            }}
-          >
-            Download CSV
-          </a>
-        </div>
-        <div style={{ background: "#fff", borderRadius: 12, overflow: "auto", boxShadow: "0 1px 6px rgba(0,0,0,.05)" }}>
+    <AdminShell active="leads" title="Leads" action={downloadBtn}>
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          marginBottom: 20,
+          fontSize: 13,
+          color: "var(--ink-soft)",
+        }}
+      >
+        <span
+          style={{
+            padding: "6px 14px",
+            borderRadius: 999,
+            background: "var(--surface)",
+            border: "1px solid var(--line)",
+          }}
+        >
+          <strong style={{ color: "var(--ink)" }}>{leads.length}</strong> total
+        </span>
+        <span
+          style={{
+            padding: "6px 14px",
+            borderRadius: 999,
+            background: "var(--surface)",
+            border: "1px solid var(--line)",
+          }}
+        >
+          <strong style={{ color: "var(--ink)" }}>
+            {leads.filter((l) => l.email_sent).length}
+          </strong>{" "}
+          emailed
+        </span>
+      </div>
+
+      <div className="card" style={{ overflow: "auto" }}>
+        {leads.length === 0 ? (
+          <div style={{ padding: "64px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: 30, marginBottom: 10 }}>✦</div>
+            <p className="display" style={{ fontSize: 20, marginBottom: 6 }}>
+              No leads yet
+            </p>
+            <p className="hint">Submissions from your assessment form will appear here.</p>
+          </div>
+        ) : (
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
@@ -80,31 +113,43 @@ export default async function AdminLeadsPage() {
               </tr>
             </thead>
             <tbody>
-              {leads.length === 0 && (
-                <tr>
-                  <td style={td} colSpan={8}>
-                    No leads yet.
-                  </td>
-                </tr>
-              )}
               {leads.map((l) => (
-                <tr key={l.id}>
-                  <td style={td}>{new Date(l.created_at).toLocaleString()}</td>
-                  <td style={td}>
+                <tr key={l.id} style={{ transition: "background .12s ease" }}>
+                  <td style={{ ...td, color: "var(--muted)" }}>
+                    {new Date(l.created_at).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </td>
+                  <td style={{ ...td, fontWeight: 600 }}>
                     {l.first_name} {l.last_name}
                   </td>
                   <td style={td}>{l.company}</td>
-                  <td style={td}>{l.email}</td>
-                  <td style={td}>{l.phone}</td>
-                  <td style={td}>{l.score}</td>
-                  <td style={td}>{l.tier}</td>
-                  <td style={td}>{l.email_sent ? "✓" : "—"}</td>
+                  <td style={td}>
+                    <a href={`mailto:${l.email}`} style={{ color: "var(--primary)" }}>
+                      {l.email}
+                    </a>
+                  </td>
+                  <td style={{ ...td, color: "var(--ink-soft)" }}>{l.phone}</td>
+                  <td style={{ ...td, fontVariantNumeric: "tabular-nums" }}>{l.score}</td>
+                  <td style={td}>
+                    <span className={`tier tier-${l.tier}`}>{l.tier}</span>
+                  </td>
+                  <td style={td}>
+                    {l.email_sent ? (
+                      <span style={{ color: "var(--lime-deep)" }}>✓ sent</span>
+                    ) : (
+                      <span style={{ color: "var(--muted)" }}>—</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      </main>
-    </div>
+        )}
+      </div>
+    </AdminShell>
   );
 }

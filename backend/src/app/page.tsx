@@ -1,66 +1,49 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+      }}
+    >
+      <div style={{ textAlign: "center", maxWidth: 560 }}>
+        <div className="eyebrow rise" style={{ marginBottom: 14 }}>
+          Coachability Consultants
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <h1
+          className="display rise"
+          style={{ fontSize: "clamp(40px, 7vw, 72px)", marginBottom: 18, animationDelay: "0.05s" }}
+        >
+          Leads engine
+        </h1>
+        <p
+          className="rise"
+          style={{
+            fontSize: 17,
+            lineHeight: 1.6,
+            color: "var(--ink-soft)",
+            marginBottom: 32,
+            animationDelay: "0.1s",
+          }}
+        >
+          The private backend that captures every assessment submission, emails each lead, and
+          keeps your records in one place.
+        </p>
+        <div className="rise" style={{ animationDelay: "0.15s" }}>
+          <Link
+            href="/admin"
+            className="btn btn-primary"
+            style={{ padding: "13px 26px", fontSize: 15 }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Open dashboard →
+          </Link>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
