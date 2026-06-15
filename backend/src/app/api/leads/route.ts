@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { leadSchema } from "@/lib/leadSchema";
-import { insertLead, markEmailSent } from "@/lib/leads";
+import { insertLead, markEmailSent, markSyncedToSheet } from "@/lib/leads";
 import { getSettings } from "@/lib/settings";
 import { sendLeadEmails } from "@/lib/email";
+import { appendLead } from "@/lib/google";
 
 function allowedOrigins(): string[] {
   return (process.env.ALLOWED_ORIGINS ?? "")
@@ -64,6 +65,13 @@ export async function POST(req: Request) {
     await markEmailSent(leadId);
   } catch (err) {
     console.error("lead email failed", err);
+  }
+
+  // Best-effort: append to the connected Google Sheet (if any).
+  try {
+    if (await appendLead(parsed.data)) await markSyncedToSheet(leadId);
+  } catch (err) {
+    console.error("sheet sync failed", err);
   }
 
   return NextResponse.json({ ok: true }, { status: 200, headers });

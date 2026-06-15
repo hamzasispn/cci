@@ -32,3 +32,10 @@ export async function markEmailSent(id: string): Promise<void> {
   const { error } = await supabase.from("leads").update({ email_sent: true }).eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+/** Mark that a lead was appended to the connected Google Sheet. */
+export async function markSyncedToSheet(id: string): Promise<void> {
+  const supabase = getServiceClient();
+  const { error } = await supabase.from("leads").update({ synced_to_sheet: true }).eq("id", id);
+  if (error) throw new Error(error.message);
+}

@@ -10,7 +10,7 @@ export default function AdminShell({
   action,
   children,
 }: {
-  active: "leads" | "settings";
+  active: "leads" | "settings" | "google";
   title: string;
   action?: ReactNode;
   children: ReactNode;
@@ -25,6 +25,7 @@ export default function AdminShell({
   const nav = [
     { key: "leads", href: "/admin", label: "Leads", icon: "▦" },
     { key: "settings", href: "/admin/settings", label: "Email", icon: "✉" },
+    { key: "google", href: "/admin/google", label: "Google Sheet", icon: "▤" },
   ] as const;
 
   return (
