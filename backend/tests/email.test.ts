@@ -76,4 +76,9 @@ describe("sendLeadEmails", () => {
     delete process.env.RESEND_API_KEY;
     await expect(sendLeadEmails(lead, settings)).rejects.toThrow("RESEND_API_KEY");
   });
+
+  it("throws when Resend returns an error (e.g. unverified domain)", async () => {
+    sendMock.mockResolvedValue({ data: null, error: { message: "domain not verified" } });
+    await expect(sendLeadEmails(lead, settings)).rejects.toThrow("domain not verified");
+  });
 });

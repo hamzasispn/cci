@@ -75,19 +75,21 @@ export async function sendLeadEmails(lead: LeadEmailData, settings: Settings): P
   const resend = new Resend(apiKey);
   const vars = buildVars(lead);
 
-  await resend.emails.send({
+  const thankYou = await resend.emails.send({
     from: settings.from_email,
     to: lead.email,
     subject: renderTemplate(settings.thankyou_subject, vars, { escape: false }),
     html: renderTemplate(settings.thankyou_html, vars),
   });
+  if (thankYou.error) throw new Error(thankYou.error.message || "thank-you email failed");
 
-  await resend.emails.send({
+  const notify = await resend.emails.send({
     from: settings.from_email,
     to: settings.admin_to_email,
     subject: `New lead: ${lead.firstName} ${lead.lastName} (${vars.tierLabel})`,
     html: adminHtml(lead, vars),
   });
+  if (notify.error) throw new Error(notify.error.message || "admin notification failed");
 }
 
 /** Send a single sample thank-you email to `to`, used by the dashboard test button. */
@@ -104,10 +106,11 @@ export async function sendTestEmail(to: string, settings: Settings): Promise<voi
     score: 18,
   };
   const vars = buildVars(sample);
-  await resend.emails.send({
+  const res = await resend.emails.send({
     from: settings.from_email,
     to,
     subject: "[TEST] " + renderTemplate(settings.thankyou_subject, vars, { escape: false }),
     html: renderTemplate(settings.thankyou_html, vars),
   });
+  if (res.error) throw new Error(res.error.message || "test email failed");
 }
