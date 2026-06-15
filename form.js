@@ -4,7 +4,7 @@
 const CONFIG = {
   brand: `<img src="https://cdn.prod.website-files.com/65fdd9abdfe007f804f15369/69f2817d3ad5de3dea2ee10a_logo.png" alt="Coachability Consultants" style="height:18px;object-fit:contain;width:auto;display:block;">`,
   brandShort: "CCI",
-  submitUrl: "",
+  submitUrl: "https://cci-silk.vercel.app/api/leads",
 
   intro: {
     heading: "What type of coaching pathway is best for you?",
