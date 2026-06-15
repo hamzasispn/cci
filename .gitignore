@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Next.js build output
+.next/
+**/.next/
+out/
+**/out/
+
+# Vercel
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
