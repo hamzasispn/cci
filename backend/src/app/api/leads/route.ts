@@ -11,6 +11,11 @@ function allowedOrigins(): string[] {
 
 function corsHeaders(origin: string | null): Record<string, string> {
   const allowList = allowedOrigins();
+  // If the request origin is on the allow-list, echo it back. Otherwise fall back to
+  // the first configured origin, or "*" when ALLOWED_ORIGINS is unset. "*" is
+  // acceptable here only because this endpoint is unauthenticated and credential-less
+  // (no cookies / Allow-Credentials). ALWAYS set ALLOWED_ORIGINS in production so an
+  // unset value does not silently widen access.
   const allow = origin && allowList.includes(origin) ? origin : allowList[0] ?? "*";
   return {
     "Access-Control-Allow-Origin": allow,

@@ -12,6 +12,8 @@ export async function insertLead(input: LeadInput): Promise<void> {
     phone: input.phone,
     message: input.message ?? "",
     score: input.score,
+    // tier is recomputed server-side from score; any client-supplied input.tier is
+    // deliberately ignored and must never be persisted.
     tier: tierForScore(input.score),
     answers: input.answers,
   });
